@@ -233,66 +233,128 @@ def get_item_image(item_id):
 
 # ============ BOT COMMANDS (With Dual Support) ============
 
+# ============ TELEGRAM UI: START & NAVIGATION ============
+
+def build_home_keyboard():
+    """Keyboard utama dengan susunan ringkas dan konsisten."""
+    markup = InlineKeyboardMarkup(row_width=2)
+    markup.add(
+        InlineKeyboardButton("🔎 Info pemain", callback_data="ui:info"),
+        InlineKeyboardButton("🖼️ Banner", callback_data="ui:banner"),
+        InlineKeyboardButton("👕 Outfit", callback_data="ui:outfit"),
+        InlineKeyboardButton("🎁 Wishlist", callback_data="ui:wishlist"),
+        InlineKeyboardButton("🛡️ Cek ban", callback_data="ui:ban"),
+        InlineKeyboardButton("🌍 Region", callback_data="ui:region"),
+    )
+    markup.row(InlineKeyboardButton("📚 Semua perintah", callback_data="ui:commands"))
+    markup.row(InlineKeyboardButton("➕ Tambah ke grup", url=f"https://t.me/{BOT_USERNAME}?startgroup=true"))
+    return markup
+
+
+def build_back_keyboard():
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("⬅️ Menu utama", callback_data="ui:home"))
+    return markup
+
+
+def build_home_text(first_name=""):
+    greeting = f" Halo, {escape(first_name)}!" if first_name else ""
+    return (
+        "<b>FREE FIRE • PLAYER INFO</b>\n"
+        "━━━━━━━━━━━━━━━━━━━━\n"
+        f"<i>Info pemain dengan tampilan yang ringkas.</i>{greeting}\n\n"
+        "<b>Mulai dari sini</b>\n"
+        "Pilih fitur di bawah atau kirim UID pemain (8–11 digit) langsung ke chat.\n\n"
+        "<b>Fitur utama</b>\n"
+        "🔎 Profil pemain dan statistik\n"
+        "🖼️ Banner, avatar, dan outfit\n"
+        "🎁 Wishlist dan informasi item\n"
+        "🛡️ Pemeriksaan status akun\n"
+        "━━━━━━━━━━━━━━━━━━━━\n"
+        "<i>Gunakan fitur hanya untuk akun yang boleh kamu periksa.</i>"
+    )
+
+
+UI_COMMANDS = {
+    "ui:info": ("🔎 <b>Info pemain</b>", "Gunakan <code>/info UID</code>\nContoh: <code>/info 12345678</code>\nMenampilkan profil dan statistik pemain."),
+    "ui:banner": ("🖼️ <b>Banner pemain</b>", "Gunakan <code>/banner UID</code>\nContoh: <code>/banner 12345678</code>"),
+    "ui:outfit": ("👕 <b>Outfit pemain</b>", "Gunakan <code>/outfit UID</code>\nContoh: <code>/outfit 12345678</code>"),
+    "ui:wishlist": ("🎁 <b>Wishlist</b>", "Gunakan <code>/wishlist UID</code> atau nama pemain."),
+    "ui:ban": ("🛡️ <b>Cek status akun</b>", "Gunakan <code>/isbanned UID</code> atau <code>/isbanned Nama</code>."),
+    "ui:region": ("🌍 <b>Info region</b>", "Gunakan <code>/region UID</code> atau <code>/region Nama</code>."),
+}
+
+
 @bot.message_handler(commands=['start', 'help'])
 def start_command(message):
     try:
-        markup = InlineKeyboardMarkup(row_width=1)
-        add_to_group_btn = InlineKeyboardButton(
-            text="➕ ADD TO GROUP",
-            url=f"https://t.me/{BOT_USERNAME}?startgroup=true"
+        first_name = getattr(message.from_user, "first_name", "") or ""
+        bot.reply_to(
+            message,
+            build_home_text(first_name),
+            reply_markup=build_home_keyboard(),
+            parse_mode="HTML"
         )
-        markup.add(add_to_group_btn)
-        
-        start_msg = """<b>🎮 FREE FIRE PLAYER INFO BOT 🎮</b>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-<b>📝 SYSTEM OVERVIEW</b>
-Welcome to the Free Fire Player Information System! This bot provides comprehensive player intelligence and account analytics for Free Fire across all global servers.
+    except Exception:
+        logger.exception("Start/help command error")
+        bot.reply_to(message, "Maaf, menu belum bisa ditampilkan. Coba lagi sebentar.")
 
-<b>🤖 MAIN COMMANDS</b>
-• <b>Get</b> [UID/Name] - Full player profile with all details
-• <b>Banner</b> [UID/Name] - View player's banner
-• <b>Outfit</b> [UID/Name] - View player's outfits
-• <b>Wishlist</b> [UID/Name] - Player's wishlist with item images
-• <b>Region</b> [UID/Name] - Server region information
-• <b>Level</b> [UID/Name] [Password] - Level progression analysis
-• <b>Isbanned</b> [UID/Name] - Account security status
-• <b>Token</b> [UID] [Password] - Generate login tokens
-• <b>Access</b> [AccessToken] - Generate token from access token
-• <b>Eat</b> [EatToken] - Generate token from EAT token
-• <b>Icon</b> [IconID] - Get icon PNG image
-• <b>Item</b> [item_id] - Search Items Information with Image
-• <b>Help</b> - Complete command manual
 
-<b>📊 DATA COVERAGE</b>
-• Complete Player Profiles
-• Equipment & Skills
-• Battle Statistics
-• Guild Information
-• Craftland Maps
-• Wishlist Items
-• Ban Status
-• Update player's bio signature
-• Region Detection
-• Items Database - Search items by ID or Icon Name
-• Icon PNG Generator
+@bot.callback_query_handler(func=lambda call: bool(call.data and call.data.startswith("ui:")))
+def navigation_callback(call):
+    try:
+        action = call.data
+        if action == "ui:home":
+            text = build_home_text(getattr(call.from_user, "first_name", "") or "")
+            markup = build_home_keyboard()
+        elif action == "ui:commands":
+            text = (
+                "<b>📚 DAFTAR PERINTAH</b>\n"
+                "━━━━━━━━━━━━━━━━━━━━\n"
+                "<b>Profil & tampilan</b>\n"
+                "• <code>/info UID</code> — profil pemain\n"
+                "• <code>/banner UID</code> — banner\n"
+                "• <code>/outfit UID</code> — outfit\n"
+                "• <code>/wishlist UID</code> — wishlist\n"
+                "• <code>/region UID</code> — region\n"
+                "• <code>/guild ID REGION</code> — info guild\n\n"
+                "<b>Informasi lainnya</b>\n"
+                "• <code>/isbanned UID</code> — cek status akun\n"
+                "• <code>/level UID PASSWORD</code> — info level\n"
+                "• <code>/icon ID</code> — gambar ikon\n"
+                "• <code>/item ID</code> — informasi item\n\n"
+                "<b>Fitur akun</b>\n"
+                "• <code>/token UID PASSWORD</code>\n"
+                "• <code>/access TOKEN</code>\n"
+                "• <code>/eat TOKEN</code>\n"
+                "• <code>/bio ...</code> — perbarui bio\n\n"
+                "<i>Catatan: jangan kirim password atau token sensitif ke chat grup. Gunakan chat pribadi dan hanya untuk akun milikmu.</i>"
+            )
+            markup = build_back_keyboard()
+        elif action in UI_COMMANDS:
+            title, details = UI_COMMANDS[action]
+            text = f"{title}\n━━━━━━━━━━━━━━━━━━━━\n{details}\n\n<i>Ganti UID dengan ID pemain yang ingin dicari.</i>"
+            markup = build_back_keyboard()
+        else:
+            bot.answer_callback_query(call.id, "Menu tidak dikenal.")
+            return
 
-<b>🌍 SUPPORTED REGIONS</b>
-All global servers including: IND, BR, US, SAC, NA, SG, RU, ID, TW, VN, TH, ME, PK, BD, EUROPE
+        bot.answer_callback_query(call.id)
+        bot.edit_message_text(
+            text,
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            reply_markup=markup,
+            parse_mode="HTML"
+        )
+    except Exception:
+        logger.exception("Menu navigation error")
+        try:
+            bot.answer_callback_query(call.id, "Menu gagal dibuka. Kirim /start untuk mencoba lagi.")
+        except Exception:
+            pass
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Type Help for detailed command reference
-Status: ✅ Operational | API: ✅ Connected | Database: ✅ Online
 
-<b>🔰 CREDIT: @bselius</b>
-<b>🔰 DEVELOPER: @bselius</b>"""
-
-        # ⚠️ IMPORTANT: parse_mode="HTML" add karo
-        bot.reply_to(message, start_msg, reply_markup=markup, parse_mode="HTML")
-        
-    except Exception as e:
-        logger.error(f"Start command error: {str(e)}")
-        bot.reply_to(message, "❌ ᴀɴ ᴇʀʀᴏʀ ᴏᴄᴄᴜʀʀᴇᴅ.")
-        
 # ============ COMMAND WITH SLASH ============
 
 @bot.message_handler(commands=['info', 'get'])
