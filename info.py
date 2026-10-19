@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import requests
 from io import BytesIO
 import telebot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, BotCommand, MenuButtonCommands
 from datetime import datetime
 import time
 import logging
@@ -1203,6 +1203,39 @@ def handle_text(message):
             
     except Exception as e:
         bot.reply_to(message, f"❌ ᴇʀʀᴏʀ: {str(e)}")
+
+# ============ TELEGRAM COMMAND MENU ============
+# Daftar ini muncul saat pengguna membuka tombol Menu di Telegram.
+TELEGRAM_COMMANDS = [
+    BotCommand("start", "Menu utama bot"),
+    BotCommand("help", "Panduan lengkap perintah"),
+    BotCommand("info", "Profil lengkap pemain: UID"),
+    BotCommand("get", "Profil pemain: UID atau nama"),
+    BotCommand("banner", "Lihat banner pemain"),
+    BotCommand("outfit", "Lihat outfit pemain"),
+    BotCommand("wishlist", "Wishlist pemain"),
+    BotCommand("region", "Informasi region pemain"),
+    BotCommand("isbanned", "Cek status akun pemain"),
+    BotCommand("level", "Analisis level pemain"),
+    BotCommand("token", "Token akun milik sendiri"),
+    BotCommand("access", "Proses access token"),
+    BotCommand("eat", "Proses EAT token"),
+    BotCommand("icon", "Ambil gambar icon berdasarkan ID"),
+    BotCommand("item", "Cari informasi item berdasarkan ID"),
+    BotCommand("guild", "Informasi guild berdasarkan ID"),
+    BotCommand("bio", "Perbarui bio akun sendiri"),
+]
+
+
+def configure_telegram_menu():
+    """Daftarkan command agar muncul pada menu Telegram."""
+    try:
+        bot.set_my_commands(TELEGRAM_COMMANDS)
+        bot.set_chat_menu_button(menu_button=MenuButtonCommands())
+        logger.info("Telegram command menu berhasil dikonfigurasi.")
+    except Exception:
+        logger.exception("Gagal mengatur Telegram command menu.")
+
 
 # ============ START BOT ============
 if __name__ == "__main__":
