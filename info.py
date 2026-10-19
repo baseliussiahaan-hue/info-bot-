@@ -16,8 +16,16 @@ from Crypto.Util.Padding import pad
 
 API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 BOT_USERNAME = "fuddjsshedffjfjdjhshsbot"
+
+# Jika token tidak disediakan lewat environment variable, minta secara interaktif.
+# Token tidak disimpan ke file atau repository.
 if not API_TOKEN:
-    raise RuntimeError("TELEGRAM_BOT_TOKEN belum diatur. Tambahkan token sebagai environment variable.")
+    from getpass import getpass
+    API_TOKEN = getpass("Masukkan token Telegram dari @BotFather: ").strip()
+
+if not API_TOKEN:
+    raise RuntimeError("Token Telegram kosong. Jalankan ulang dan masukkan token yang valid.")
+
 bot = telebot.TeleBot(API_TOKEN)
 
 # ============ LOGGING ============
