@@ -7,6 +7,38 @@ Bot Telegram untuk mencari informasi pemain Free Fire. Repo ini berisi kode sumb
 - **Channel:** https://t.me/bsnsztools
 - **Owner:** Base — [@bselius](https://t.me/bselius)
 
+## Cara paling cepat menjalankan bot
+
+### Termux
+
+Salin perintah berikut satu per satu:
+
+```bash
+pkg update
+pkg install python git
+git clone https://github.com/baseliussiahaan-hue/info-bot-.git
+cd info-bot-
+python -m pip install -r requirements.txt
+python info.py
+```
+
+Saat diminta `Masukkan token Telegram dari @BotFather:`, tempel token bot milikmu lalu tekan Enter. Saat mengetik token, teks mungkin tidak terlihat di layar; itu normal. Token hanya digunakan untuk proses yang sedang berjalan dan tidak disimpan ke file. Jangan pernah memasukkan token ke dalam perintah `git` atau mengunggahnya ke repository.
+
+Setelah bot berjalan, buka [@fuddjsshedffjfjdjhshsbot](https://t.me/fuddjsshedffjfjdjhshsbot) dan kirim `/start`. Biarkan Termux tetap berjalan agar bot tetap aktif.
+
+### Komputer (Python sudah terpasang)
+
+```bash
+git clone https://github.com/baseliussiahaan-hue/info-bot-.git
+cd info-bot-
+python -m pip install -r requirements.txt
+python info.py
+```
+
+Masukkan token ketika diminta. Di Windows, jika perintah `python` tidak dikenali, coba `py` sebagai gantinya.
+
+---
+
 ## Panduan penggunaan
 
 ### 1. Siapkan bot Telegram
