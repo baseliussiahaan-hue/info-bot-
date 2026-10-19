@@ -236,20 +236,27 @@ def get_item_image(item_id):
 # ============ TELEGRAM UI: START & NAVIGATION ============
 
 def build_home_keyboard():
-    """Keyboard utama dengan susunan ringkas dan konsisten."""
+    """Keyboard utama dengan tombol untuk seluruh fitur yang tersedia."""
     markup = InlineKeyboardMarkup(row_width=2)
     markup.add(
-        InlineKeyboardButton("🔎 Info pemain", callback_data="ui:info"),
+        InlineKeyboardButton("🔎 Get / Info", callback_data="ui:info"),
         InlineKeyboardButton("🖼️ Banner", callback_data="ui:banner"),
         InlineKeyboardButton("👕 Outfit", callback_data="ui:outfit"),
         InlineKeyboardButton("🎁 Wishlist", callback_data="ui:wishlist"),
-        InlineKeyboardButton("🛡️ Cek ban", callback_data="ui:ban"),
         InlineKeyboardButton("🌍 Region", callback_data="ui:region"),
+        InlineKeyboardButton("🛡️ Isbanned", callback_data="ui:ban"),
+        InlineKeyboardButton("📈 Level", callback_data="ui:level"),
+        InlineKeyboardButton("🔑 Token", callback_data="ui:token"),
+        InlineKeyboardButton("🔄 Access", callback_data="ui:access"),
+        InlineKeyboardButton("🔐 EAT", callback_data="ui:eat"),
+        InlineKeyboardButton("🪪 Icon", callback_data="ui:icon"),
+        InlineKeyboardButton("📦 Item", callback_data="ui:item"),
+        InlineKeyboardButton("🏰 Guild", callback_data="ui:guild"),
+        InlineKeyboardButton("✍️ Bio", callback_data="ui:bio"),
     )
     markup.row(InlineKeyboardButton("📚 Semua perintah", callback_data="ui:commands"))
     markup.row(InlineKeyboardButton("➕ Tambah ke grup", url=f"https://t.me/{BOT_USERNAME}?startgroup=true"))
     return markup
-
 
 def build_back_keyboard():
     markup = InlineKeyboardMarkup()
@@ -276,12 +283,20 @@ def build_home_text(first_name=""):
 
 
 UI_COMMANDS = {
-    "ui:info": ("🔎 <b>Info pemain</b>", "Gunakan <code>/info UID</code>\nContoh: <code>/info 12345678</code>\nMenampilkan profil dan statistik pemain."),
-    "ui:banner": ("🖼️ <b>Banner pemain</b>", "Gunakan <code>/banner UID</code>\nContoh: <code>/banner 12345678</code>"),
-    "ui:outfit": ("👕 <b>Outfit pemain</b>", "Gunakan <code>/outfit UID</code>\nContoh: <code>/outfit 12345678</code>"),
+    "ui:info": ("🔎 <b>Get / Info pemain</b>", "Gunakan <code>/get UID</code> atau <code>/info UID</code>\\nContoh: <code>/info 12345678</code>\\nMenampilkan profil dan statistik pemain."),
+    "ui:banner": ("🖼️ <b>Banner pemain</b>", "Gunakan <code>/banner UID</code>."),
+    "ui:outfit": ("👕 <b>Outfit pemain</b>", "Gunakan <code>/outfit UID</code>."),
     "ui:wishlist": ("🎁 <b>Wishlist</b>", "Gunakan <code>/wishlist UID</code> atau nama pemain."),
     "ui:ban": ("🛡️ <b>Cek status akun</b>", "Gunakan <code>/isbanned UID</code> atau <code>/isbanned Nama</code>."),
-    "ui:region": ("🌍 <b>Info region</b>", "Gunakan <code>/region UID</code> atau <code>/region Nama</code>."),
+    "ui:region": ("🌍 <b>Region</b>", "Gunakan <code>/region UID</code>."),
+    "ui:level": ("📈 <b>Level</b>", "Petunjuk: perintah level memerlukan UID dan verifikasi akun. Jangan kirim password di grup."),
+    "ui:token": ("🔑 <b>Token akun</b>", "Fitur ini berkaitan dengan kredensial akun. Gunakan hanya pada akun milikmu, melalui chat pribadi, dan jangan membagikan hasilnya."),
+    "ui:access": ("🔄 <b>Access</b>", "Fitur ini menangani kredensial sensitif. Jangan bagikan token atau kirimkannya di grup."),
+    "ui:eat": ("🔐 <b>EAT</b>", "Fitur ini menangani kredensial sensitif. Jangan bagikan token atau kirimkannya di grup."),
+    "ui:icon": ("🪪 <b>Icon</b>", "Gunakan <code>/icon ICON_ID</code>."),
+    "ui:item": ("📦 <b>Item</b>", "Gunakan <code>/item ITEM_ID</code>."),
+    "ui:guild": ("🏰 <b>Guild</b>", "Gunakan <code>/guild CLAN_ID REGION</code>."),
+    "ui:bio": ("✍️ <b>Bio</b>", "Fitur bio dapat mengubah informasi akun. Gunakan hanya pada akun milikmu."),
 }
 
 
