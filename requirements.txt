@@ -1,3 +1,4 @@
 requests
 pyTelegramBotAPI
 pycryptodome
+python-dotenv
