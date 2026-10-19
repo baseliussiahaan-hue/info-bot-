@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 import requests
 from io import BytesIO
 import telebot
@@ -14,17 +15,16 @@ import binascii
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
 
+# Baca konfigurasi dari file .env lokal (jangan unggah file ini ke GitHub).
+load_dotenv()
 API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 BOT_USERNAME = "fuddjsshedffjfjdjhshsbot"
 
-# Jika token tidak disediakan lewat environment variable, minta secara interaktif.
-# Token tidak disimpan ke file atau repository.
 if not API_TOKEN:
-    from getpass import getpass
-    API_TOKEN = getpass("Masukkan token Telegram dari @BotFather: ").strip()
-
-if not API_TOKEN:
-    raise RuntimeError("Token Telegram kosong. Jalankan ulang dan masukkan token yang valid.")
+    raise RuntimeError(
+        "Token belum diatur. Buat file .env dari .env.example, "
+        "isi TELEGRAM_BOT_TOKEN, lalu jalankan ulang bot."
+    )
 
 bot = telebot.TeleBot(API_TOKEN)
 
