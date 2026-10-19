@@ -1263,6 +1263,7 @@ if __name__ == "__main__":
     print("📝 Without Slash: get, level, token, access, eat, icon, item, guild, isbanned, wishlist, banner, outfit, region, bio")
     print("="*50 + "\n")
     try:
+        configure_telegram_menu()
         bot.polling(none_stop=True, interval=0)
     except Exception as e:
         print(f"❌ Bot error: {e}")
