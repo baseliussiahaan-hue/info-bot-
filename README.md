@@ -22,7 +22,7 @@ python -m pip install -r requirements.txt
 python info.py
 ```
 
-Saat diminta `Masukkan token Telegram dari @BotFather:`, tempel token bot milikmu lalu tekan Enter. Saat mengetik token, teks mungkin tidak terlihat di layar; itu normal. Token hanya digunakan untuk proses yang sedang berjalan dan tidak disimpan ke file. Jangan pernah memasukkan token ke dalam perintah `git` atau mengunggahnya ke repository.
+Token sekarang diatur lewat file lokal `.env`, bukan lewat prompt tersembunyi. Setelah instalasi dependensi, ikuti langkah **Atur token lewat file .env** di bawah. File `.env` diabaikan Git dan tidak boleh diunggah.
 
 Setelah bot berjalan, buka [@fuddjsshedffjfjdjhshsbot](https://t.me/fuddjsshedffjfjdjhshsbot) dan kirim `/start`. Biarkan Termux tetap berjalan agar bot tetap aktif.
 
@@ -80,23 +80,28 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-Atur token sebagai environment variable, kemudian jalankan bot.
+### Atur token lewat file .env (disarankan)
 
-**Termux (sesi terminal saat ini):**
+Salin template konfigurasi, lalu buka dengan editor teks:
 
 ```bash
-export TELEGRAM_BOT_TOKEN='TEMPEL_TOKEN_BOT_KAMU_DI_SINI'
+cp .env.example .env
+nano .env
+```
+
+Di dalam editor, ubah baris berikut menjadi token bot milikmu:
+
+```dotenv
+TELEGRAM_BOT_TOKEN=PASTE_TOKEN_DI_SINI
+```
+
+Di `nano`, simpan dengan **Ctrl+O**, tekan **Enter**, lalu keluar dengan **Ctrl+X**. Setelah itu jalankan:
+
+```bash
 python info.py
 ```
 
-Ganti teks `TEMPEL_TOKEN_BOT_KAMU_DI_SINI` dengan token bot milikmu. Jangan kirim perintah yang berisi token ke orang lain atau memasukkannya ke screenshot publik. Token yang diatur dengan `export` berlaku untuk sesi terminal saat ini.
-
-**Windows PowerShell:**
-
-```powershell
-$env:TELEGRAM_BOT_TOKEN = "TEMPEL_TOKEN_BOT_KAMU_DI_SINI"
-python info.py
-```
+Token akan dibaca dari file lokal `.env` dan tidak perlu diketik pada prompt tersembunyi. Jangan menambahkan tanda kutip kecuali memang diperlukan, jangan membagikan file `.env`, dan jangan mengunggahnya ke GitHub. Repository telah dikonfigurasi agar file `.env` diabaikan Git.
 
 Biarkan terminal tetap berjalan selama ingin bot aktif. Jika proses dihentikan atau terminal ditutup, bot yang dijalankan dengan cara ini biasanya ikut berhenti.
 
@@ -120,7 +125,7 @@ Menambahkan secret saja **tidak otomatis menjalankan bot**. Harus ada workflow a
 
 ## Pemecahan masalah
 
-- **`TELEGRAM_BOT_TOKEN belum diatur`:** atur environment variable sesuai langkah 3, lalu jalankan ulang.
+- **`Token belum diatur`:** pastikan file `.env` ada di folder `info-bot-` dan baris `TELEGRAM_BOT_TOKEN=...` sudah berisi token yang benar.
 - **`ModuleNotFoundError`:** jalankan `pip install -r requirements.txt` pada environment Python yang sama dengan yang digunakan untuk menjalankan bot.
 - **Bot tidak merespons:** pastikan proses masih berjalan, token benar dan belum dicabut, serta periksa pesan error di terminal.
 - **Error saat mencari data pemain:** layanan API atau endpoint yang dipakai kode mungkin tidak tersedia. Periksa log; panduan ini tidak menjamin layanan eksternal selalu aktif.
